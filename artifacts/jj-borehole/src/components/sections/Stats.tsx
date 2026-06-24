@@ -29,9 +29,9 @@ function AnimatedCounter({ value, duration = 2 }: { value: number, duration?: nu
 
 export function Stats() {
   const stats = [
-    { label: "Boreholes Drilled", value: 500, suffix: "+" },
-    { label: "Years Experience", value: 20, suffix: "+" },
-    { label: "Happy Clients", value: 200, suffix: "+" },
+    { label: "Jobs Completed", value: 9800, suffix: "+" },
+    { label: "Years Experience", value: 40, suffix: "+" },
+    { label: "Happy Clients", value: 5000, suffix: "+" },
     { label: "Hours a Day", value: 24, suffix: "/7" },
   ];
 
