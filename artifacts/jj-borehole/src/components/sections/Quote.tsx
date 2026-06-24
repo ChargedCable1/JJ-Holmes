@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -32,10 +33,27 @@ export function Quote() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast.success("Quote request sent successfully! We'll be in touch shortly.");
-    form.reset();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/quote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Something went wrong");
+      }
+      toast.success("Quote request sent! We'll be in touch shortly.");
+      form.reset();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to send. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -177,8 +195,12 @@ export function Quote() {
                   )}
                 />
 
-                <Button type="submit" size="lg" className="w-full text-lg h-14 bg-primary hover:bg-primary/90">
-                  <Send className="mr-2 w-5 h-5" /> Request Quote
+                <Button type="submit" size="lg" disabled={isSubmitting} className="w-full text-lg h-14 bg-primary hover:bg-primary/90">
+                  {isSubmitting ? (
+                    <><Loader2 className="mr-2 w-5 h-5 animate-spin" /> Sending...</>
+                  ) : (
+                    <><Send className="mr-2 w-5 h-5" /> Request Quote</>
+                  )}
                 </Button>
               </form>
             </Form>
