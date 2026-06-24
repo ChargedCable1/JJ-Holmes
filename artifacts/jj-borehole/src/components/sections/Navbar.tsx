@@ -27,7 +27,8 @@ export function Navbar() {
   const navLinks = [
     { name: "Services", id: "services" },
     { name: "Why Us", id: "about" },
-    { name: "Stats", id: "stats" },
+    { name: "Gallery", id: "gallery" },
+    { name: "Contact", id: "quote" },
   ];
 
   return (

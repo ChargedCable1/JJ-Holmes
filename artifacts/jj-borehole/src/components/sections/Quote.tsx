@@ -84,7 +84,7 @@ export function Quote() {
               </div>
               <div>
                 <h4 className="font-semibold text-secondary uppercase tracking-wider text-sm mb-1">Email Us</h4>
-                <p className="text-lg text-white">info@jjholmes.co.za</p>
+                <p className="text-base text-white break-all">holmesjj@mweb.co.za</p>
               </div>
             </div>
           </div>
