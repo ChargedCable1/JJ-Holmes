@@ -3,6 +3,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
 import { Stats } from "@/components/sections/Stats";
 import { About } from "@/components/sections/About";
+import { Gallery } from "@/components/sections/Gallery";
 import { Quote } from "@/components/sections/Quote";
 import { Footer } from "@/components/sections/Footer";
 import { FloatingWhatsApp } from "@/components/sections/FloatingWhatsApp";
@@ -15,6 +16,7 @@ export default function Home() {
       <Services />
       <About />
       <Stats />
+      <Gallery />
       <Quote />
       <Footer />
       <FloatingWhatsApp />
