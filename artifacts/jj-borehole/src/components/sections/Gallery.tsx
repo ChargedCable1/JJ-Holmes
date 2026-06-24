@@ -20,28 +20,9 @@ const photos = [
   { src: job7, alt: "JJ Holmes team on the job" },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, scale: 0.85, y: 30 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 export function Gallery() {
   const [selected, setSelected] = useState<number | null>(null);
 
-  const open = (i: number) => setSelected(i);
   const close = () => setSelected(null);
   const prev = () => setSelected((s) => (s === null ? null : (s - 1 + photos.length) % photos.length));
   const next = () => setSelected((s) => (s === null ? null : (s + 1) % photos.length));
@@ -53,18 +34,19 @@ export function Gallery() {
   };
 
   return (
-    <section id="gallery" className="py-24 bg-card relative overflow-hidden">
-      {/* Decorative background blobs */}
+    <section id="gallery" className="py-24 bg-background relative overflow-hidden">
       <div className="absolute top-0 left-0 w-96 h-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 translate-x-1/2 translate-y-1/2 rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
+
+        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
           <span className="inline-block text-sm font-semibold uppercase tracking-widest text-secondary mb-3">
             Real Work, Real Results
@@ -77,43 +59,85 @@ export function Gallery() {
           </p>
         </motion.div>
 
-        {/* Masonry-style grid */}
+        {/* Feature photo — top row, full width */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[220px]"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          onClick={() => setSelected(0)}
+          className="group relative w-full aspect-[21/9] rounded-2xl overflow-hidden cursor-pointer mb-4 shadow-lg"
         >
-          {photos.map((photo, i) => (
+          <img
+            src={photos[0].src}
+            alt={photos[0].alt}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end p-6">
+            <div className="flex items-center gap-2 text-white">
+              <ZoomIn className="w-5 h-5" />
+              <span className="text-sm font-semibold">View full photo</span>
+            </div>
+          </div>
+          <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-secondary/50 transition-all duration-300 pointer-events-none" />
+        </motion.div>
+
+        {/* Second row — 3 equal photos */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          {photos.slice(1, 4).map((photo, i) => (
             <motion.div
-              key={i}
-              variants={itemVariants}
-              onClick={() => open(i)}
-              data-testid={`gallery-photo-${i}`}
-              className={[
-                "relative group cursor-pointer overflow-hidden rounded-2xl shadow-md",
-                i === 0 ? "col-span-2 row-span-2" : "",
-                i === 3 ? "col-span-2" : "",
-              ].join(" ")}
+              key={i + 1}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              onClick={() => setSelected(i + 1)}
+              className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md"
             >
               <img
                 src={photo.src}
                 alt={photo.alt}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              {/* Overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end p-4">
                 <div className="flex items-center gap-2 text-white">
-                  <ZoomIn className="w-5 h-5" />
-                  <span className="text-sm font-medium">View photo</span>
+                  <ZoomIn className="w-4 h-4" />
+                  <span className="text-xs font-semibold">View photo</span>
                 </div>
               </div>
-              {/* Subtle border glow on hover */}
-              <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-secondary/60 transition-all duration-300 pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-secondary/50 transition-all duration-300 pointer-events-none" />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
+
+        {/* Third row — 3 equal photos */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {photos.slice(4, 7).map((photo, i) => (
+            <motion.div
+              key={i + 4}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              onClick={() => setSelected(i + 4)}
+              className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md"
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end p-4">
+                <div className="flex items-center gap-2 text-white">
+                  <ZoomIn className="w-4 h-4" />
+                  <span className="text-xs font-semibold">View photo</span>
+                </div>
+              </div>
+              <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-secondary/50 transition-all duration-300 pointer-events-none" />
+            </motion.div>
+          ))}
+        </div>
+
       </div>
 
       {/* Lightbox */}
@@ -124,7 +148,7 @@ export function Gallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
             onClick={close}
             onKeyDown={handleKey}
@@ -134,7 +158,7 @@ export function Gallery() {
             <button
               onClick={close}
               data-testid="button-gallery-close"
-              className="absolute top-5 right-5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors z-10"
+              className="absolute top-5 right-5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors z-10"
             >
               <X className="w-6 h-6" />
             </button>
@@ -143,7 +167,7 @@ export function Gallery() {
             <button
               onClick={(e) => { e.stopPropagation(); prev(); }}
               data-testid="button-gallery-prev"
-              className="absolute left-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors z-10"
+              className="absolute left-4 md:left-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors z-10"
             >
               <ChevronLeft className="w-7 h-7" />
             </button>
@@ -151,20 +175,21 @@ export function Gallery() {
             {/* Image */}
             <motion.div
               key={selected}
-              initial={{ opacity: 0, scale: 0.92 }}
+              initial={{ opacity: 0, scale: 0.93 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.92 }}
+              exit={{ opacity: 0, scale: 0.93 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="max-w-4xl max-h-[85vh] mx-16"
+              className="max-w-5xl w-full px-20 flex flex-col items-center"
               onClick={(e) => e.stopPropagation()}
             >
               <img
                 src={photos[selected].src}
                 alt={photos[selected].alt}
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
               />
-              <p className="text-white/60 text-sm text-center mt-3">
-                {selected + 1} / {photos.length} — {photos[selected].alt}
+              <p className="text-white/50 text-sm text-center mt-4">
+                <span className="text-white/80 font-medium">{selected + 1} / {photos.length}</span>
+                {" "}&mdash; {photos[selected].alt}
               </p>
             </motion.div>
 
@@ -172,18 +197,18 @@ export function Gallery() {
             <button
               onClick={(e) => { e.stopPropagation(); next(); }}
               data-testid="button-gallery-next"
-              className="absolute right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors z-10"
+              className="absolute right-4 md:right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors z-10"
             >
               <ChevronRight className="w-7 h-7" />
             </button>
 
             {/* Dot indicators */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 items-center">
               {photos.map((_, i) => (
                 <button
                   key={i}
                   onClick={(e) => { e.stopPropagation(); setSelected(i); }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${i === selected ? "bg-secondary w-6" : "bg-white/30"}`}
+                  className={`rounded-full transition-all duration-300 ${i === selected ? "bg-secondary w-6 h-2" : "bg-white/30 w-2 h-2"}`}
                 />
               ))}
             </div>
