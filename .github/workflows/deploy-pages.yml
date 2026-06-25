@@ -26,6 +26,7 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
           npm install -g pnpm@latest
+          export PATH="$(npm bin -g):$PATH"
           pnpm --version
 
       - name: Install dependencies
