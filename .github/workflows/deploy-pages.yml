@@ -20,15 +20,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
-      - name: Check Node and pnpm versions
+      - name: Install pnpm CLI
         run: |
-          node --version
-          npm --version
+          npm install -g pnpm@latest
+          echo "PATH=$PATH"
+          which pnpm
           pnpm --version
 
       - name: Install dependencies
