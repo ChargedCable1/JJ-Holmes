@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      BASE_PATH: "/JJ-Holmes/"
 
     steps:
       - name: Checkout repository
