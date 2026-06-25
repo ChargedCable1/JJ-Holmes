@@ -20,13 +20,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install pnpm CLI
+      - name: Enable Corepack and pnpm
         run: |
-          npm config set prefix "$HOME/.npm-global"
-          npm install -g pnpm@latest --unsafe-perm=true --allow-root
-          echo "$HOME/.npm-global/bin" >> $GITHUB_PATH
-          echo "PATH=$PATH:$HOME/.npm-global/bin"
-          which pnpm
+          corepack enable
+          corepack prepare pnpm@latest --activate
           pnpm --version
 
       - name: Install dependencies
