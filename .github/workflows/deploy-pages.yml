@@ -18,13 +18,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 24
-          cache: "pnpm"
+          node-version: 18
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 8
+
+      - name: Check Node and pnpm versions
+        run: |
+          node --version
+          npm --version
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install
