@@ -1,7 +1,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Droplets, PhoneCall } from "lucide-react";
+import boreholeHero from "/images/job-photos/job1.jpg";
 
 const orbs = [
   { size: 300, x: "10%", y: "20%", delay: 0, duration: 8 },
@@ -12,9 +13,16 @@ const orbs = [
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+  }, []);
+  
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const bgY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? ["0%", "0%"] : ["0%", "30%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? ["0%", "0%"] : ["0%", "15%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   const scrollTo = (id: string) => {
@@ -24,16 +32,20 @@ export function Hero() {
 
   return (
     <section ref={ref} id="hero" className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden">
-      {/* Parallax background */}
+      {/* Premium gradient background with real image */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
         <div className="absolute inset-0 bg-[#001220]" />
         <div className="ripple-bg" />
-        <div className="absolute inset-0 opacity-35 bg-[url('https://images.unsplash.com/photo-1543822180-2a8292c7336d?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#001220] via-[#001220]/60 to-transparent" />
+        <img 
+          src={boreholeHero} 
+          alt="Professional borehole pump installation in South Africa" 
+          className="absolute inset-0 w-full h-full object-cover opacity-30" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001220] via-[#001220]/70 to-[#001220]/40" />
       </motion.div>
 
-      {/* Animated floating orbs */}
-      {orbs.map((orb, i) => (
+      {/* Animated floating orbs - respects reduced motion */}
+      {!prefersReducedMotion && orbs.map((orb, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full pointer-events-none"
@@ -77,7 +89,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white max-w-4xl leading-[1.05] mb-6"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white max-w-4xl leading-[1.05] mb-6 drop-shadow-lg"
         >
           Guaranteed Water{" "}
           <br className="hidden md:block" />
@@ -95,7 +107,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-          className="text-lg md:text-xl text-white/75 max-w-2xl mb-12 font-light leading-relaxed"
+          className="text-lg md:text-xl text-white/85 max-w-2xl mb-12 font-light leading-relaxed"
         >
           Professional borehole pump installation, maintenance, and repair for
           residential, agricultural, and commercial clients across South Africa.
@@ -108,14 +120,14 @@ export function Hero() {
           className="flex flex-col sm:flex-row gap-4"
         >
           <motion.div
-            animate={{ boxShadow: ["0 0 20px rgba(14,165,233,0.3)", "0 0 40px rgba(14,165,233,0.6)", "0 0 20px rgba(14,165,233,0.3)"] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={!prefersReducedMotion ? { boxShadow: ["0 0 20px rgba(14,165,233,0.3)", "0 0 40px rgba(14,165,233,0.6)", "0 0 20px rgba(14,165,233,0.3)"] } : {}}
+            transition={!prefersReducedMotion ? { duration: 2.5, repeat: Infinity, ease: "easeInOut" } : {}}
             className="rounded-full"
           >
             <Button
               size="lg"
               data-testid="button-hero-quote"
-              className="text-lg px-8 py-6 rounded-full bg-secondary hover:bg-secondary/90 text-white transition-all hover:scale-105 active:scale-95"
+              className="text-lg px-8 py-6 rounded-full bg-secondary hover:bg-secondary/90 text-white transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl font-semibold"
               onClick={() => scrollTo("quote")}
             >
               Get a Free Quote <ArrowRight className="ml-2 w-5 h-5" />
@@ -125,7 +137,7 @@ export function Hero() {
             variant="outline"
             size="lg"
             data-testid="button-hero-services"
-            className="text-lg px-8 py-6 rounded-full bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95 transition-all"
+            className="text-lg px-8 py-6 rounded-full bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white hover:scale-105 active:scale-95 transition-all font-semibold"
             onClick={() => scrollTo("services")}
           >
             Our Services
